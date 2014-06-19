@@ -7,76 +7,94 @@ https://docs.djangoproject.com/en/1.6/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+from configurations import Configuration, values
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
+class Common(Configuration):
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&c6#vzn=m_smpfv7aar35qw2&f2moev$d=0@3a(4e5u4udnl*r'
+    # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+    BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+    # Quick-start development settings - unsuitable for production
+    # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
-TEMPLATE_DEBUG = True
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = '%=&h)rf+n*9m0fd=*$=&lqzbnqmdo-goul9d8^b+$*ns3%oar$'
 
-ALLOWED_HOSTS = []
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = True
 
+    TEMPLATE_DEBUG = True
 
-# Application definition
-
-INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-)
-
-MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-)
-
-ROOT_URLCONF = 'isdebabyeral.urls'
-
-WSGI_APPLICATION = 'isdebabyeral.wsgi.application'
+    ALLOWED_HOSTS = []
 
 
-# Database
-# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+    # Application definition
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+    INSTALLED_APPS = (
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+    )
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.6/topics/i18n/
+    MIDDLEWARE_CLASSES = (
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    )
 
-LANGUAGE_CODE = 'en-us'
+    ROOT_URLCONF = 'isdebabyeral.urls'
 
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
+    WSGI_APPLICATION = 'isdebabyeral.wsgi.application'
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.6/howto/static-files/
+    # Database
+    # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+    # http://django-configurations.readthedocs.org/en/latest/values/#configurations.values.DatabaseURLValue
 
-STATIC_URL = '/static/'
+    DATABASES = values.DatabaseURLValue('sqlite:///%s' % os.path.join(BASE_DIR, 'db.sqlite3'),
+                                        environ=True)
+
+    # Internationalization
+    # https://docs.djangoproject.com/en/1.6/topics/i18n/
+
+    LANGUAGE_CODE = 'en-us'
+
+    TIME_ZONE = 'UTC'
+
+    USE_I18N = True
+
+    USE_L10N = True
+
+    USE_TZ = True
+
+
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/1.6/howto/static-files/
+
+    STATIC_URL = '/static/'
+
+
+class Dev(Common):
+    """
+    The in-development settings and the default configuration.
+    """
+    pass
+
+
+class Prod(Common):
+    """
+    The in-production settings.
+    """
+    DEBUG = False
+    TEMPLATE_DEBUG = DEBUG
+
+    SECRET_KEY = values.SecretValue()
